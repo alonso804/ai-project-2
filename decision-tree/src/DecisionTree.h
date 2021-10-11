@@ -27,14 +27,12 @@ class DecisionTree {
   int max_depth;  
   vector<vector<float>> data;
   int n_features;
-  int n_rows;
   Node *root;
 
 public:
   DecisionTree(string fileName,int min_samples_split, int max_depth) {
 	  this->data = CSVReader::read(fileName);
     this->min_samples_split = min_samples_split;
-    n_rows = 100;
     n_features = this->data[0].size() - 1;
     this->max_depth = max_depth;
     this->root = build_tree(this->data);
@@ -55,7 +53,7 @@ public:
   vector<float> set_Y(vector<vector<float>> &data){
     vector<float> Y;
     for (auto it = begin(data); it!= end(data);it++)
-      Y.push_back((*it)[(*it).size()]);
+      Y.push_back((*it)[(*it).size()-1]);
 
     return Y;
   }
@@ -79,6 +77,7 @@ public:
 
     auto Y = set_Y(data);
     auto X = set_X(data);
+    //cout<<Y<<endl;
     int num_samples = Y.size();
     int num_features = X[0].size();
 

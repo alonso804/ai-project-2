@@ -1,0 +1,3 @@
+C:/Users/mauri/Documents/UTEC/IA/ia-project-2/decision-tree/src/cmake-build-debug/CMakeFiles/src.dir
+C:/Users/mauri/Documents/UTEC/IA/ia-project-2/decision-tree/src/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/mauri/Documents/UTEC/IA/ia-project-2/decision-tree/src/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -11,11 +11,9 @@ public:
 		string line;
 		vector<vector<float>> dataset;
 
-		file.open(fileName, ios::in);
+        file.open(fileName, ios::in);
 
 		if (file.is_open()) {
-			getline(file, line, '\n');
-
 			while (getline(file, line, '\n')) {
 				vector<float> row;
 				stringstream s(line);
