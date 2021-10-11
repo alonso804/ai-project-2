@@ -3,13 +3,13 @@
 
 #include "Headers.h"
 
-template <typename Dataset>
+
 class CSVReader {
 public:
-	static vector<Dataset> read(string fileName, char delimiter = ',') {
+	static vector<vector<float>> read(string fileName, char delimiter = ',') {
 		fstream file;
 		string line;
-		vector<Dataset> dataset;
+		vector<vector<float>> dataset;
 
 		file.open(fileName, ios::in);
 
@@ -17,15 +17,21 @@ public:
 			getline(file, line, '\n');
 
 			while (getline(file, line, '\n')) {
-				vector<string> row;
+				vector<float> row;
 				stringstream s(line);
 				string word;
  
  				while (getline(s, word, delimiter)) {
-					row.push_back(word);
+					if (word.length() == 12){
+						word = "1";
+					}
+					else if (word.length() == 16){
+						word = "-1";
+					}
+					row.push_back(stof(word));
 				}
  
-				dataset.push_back(Dataset(row));
+				dataset.push_back(row);
 			}
 
 			file.close();

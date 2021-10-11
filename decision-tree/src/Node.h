@@ -5,22 +5,28 @@
 
 using namespace std;
 
-template <typename Dataset>
-class DecisionTree;
+struct Node{
+  //decision Node
+  int feature_index;
+  Node* left;
+  Node* right;
+  float gini_gain;
 
-template <typename Dataset>
-class Node {
-  vector<Dataset> data;
-  shared_ptr<Node<Dataset>> left;
-  shared_ptr<Node<Dataset>> right;
+  //leaf Node
+  float value;
 
-public:
-  Node(vector<Dataset> data) {
-    this->data = data;
+  Node(int feature_index,float value, Node *left, Node *right, float gini_gain){
+    this->feature_index = feature_index;
+    this-> value = value;
+    this->left = left;
+    this->right = right;
+    this-> gini_gain;
   }
 
-  template <class>
-  friend class DecisionTree;
+  Node(float value){
+    this->value = value;
+  }
+
 };
 
 #endif //Node_H
