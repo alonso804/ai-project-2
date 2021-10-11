@@ -141,9 +141,7 @@ public:
             best.set(i,*it,data_left,data_left,curr_gain);
             max_gain = curr_gain;
           }
-
         }
-
       }
     }
     return best;
@@ -168,7 +166,38 @@ public:
   }
 
   float calculate_leaf_value(vector<float> Y){
-    return 1.2;
+    sort(Y.begin(),Y.end());
+    float max_value_repeated;
+    int max_times_repeated = 0;
+    int current = 0;
+    for (auto it = begin(Y); it!= end(Y)-1; it++){
+      if (*it == *(it+1)){
+        current++;
+        if (current > max_times_repeated){
+          max_times_repeated = current;
+          max_value_repeated = *it;
+        }
+      }
+    }
+    return max_value_repeated;
+  }
+
+  void traverse_tree(Node *node, int indent = 1){
+    if (node){
+      node->print();
+      for (int i = 0;i<indent;i++)
+        cout<<"\t";
+      cout<<"left:";
+      traverse_tree(node->left,indent+indent);
+      for (int i = 0;i<indent;i++)
+        cout<<"\t";
+      cout<<"right:";
+      traverse_tree(node->right,indent+indent);
+    }
+  }
+
+  void print(){
+    traverse_tree(this->root);
   }
   ~DecisionTree() {}
 };

@@ -12,6 +12,6 @@ int main(int argc, char *argv[]) {
 	*/
 
 	auto decisionTree = DecisionTree("iris.csv",2,3);
-
+	decisionTree.print();
 	return 0;
 }

@@ -8,8 +8,8 @@ using namespace std;
 struct Node{
   //decision Node
   int feature_index;
-  Node* left;
-  Node* right;
+  Node* left = nullptr;
+  Node* right = nullptr;
   float gini_gain;
 
   //leaf Node
@@ -27,6 +27,17 @@ struct Node{
     this->value = value;
   }
 
+  void print(){
+    if (!this->right && !this->left){
+      cout<<this->value<<endl;
+    }
+    else{
+      cout<<"X_"<<this-> feature_index<<" <= "<<value<<", gini: "<<this->gini_gain<<endl;
+    }
+  }
+
 };
+
+
 
 #endif //Node_H

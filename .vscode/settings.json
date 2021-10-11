@@ -1,0 +1,25 @@
+{
+    "files.associations": {
+        ".html": "html",
+        "*.html": "html",
+        "*.tcc": "cpp",
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "deque": "cpp",
+        "vector": "cpp",
+        "optional": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "ratio": "cpp",
+        "system_error": "cpp",
+        "functional": "cpp",
+        "regex": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "bitset": "cpp",
+        "set": "cpp",
+        "iostream": "cpp"
+    }
+}
