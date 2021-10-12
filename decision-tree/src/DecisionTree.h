@@ -38,18 +38,6 @@ public:
     this->root = build_tree(this->data);
   }
 
-	void split(int index,float value, vector<vector<float>> &dataset, vector<vector<float>> &left, vector<vector<float>> &right) {
-    for (auto it = begin(dataset);it != end(dataset);it++){
-      if ((*it)[index] <= value){
-        left.push_back(*it);
-      }
-      else {
-        right.push_back(*it);
-      }
-    }
-  }
-
-
   vector<float> set_Y(vector<vector<float>> &data){
     vector<float> Y;
     for (auto it = begin(data); it!= end(data);it++)
@@ -58,7 +46,7 @@ public:
     return Y;
   }
 
-  vector<vector<float>> set_X(vector<vector<float>> data){
+  vector<vector<float>> set_X(vector<vector<float>> &data){
     vector<vector<float>> X;
     vector<float> helper;
 
@@ -112,6 +100,18 @@ public:
       return column;
   }
 
+
+  void split(int index,float value, vector<vector<float>> &dataset, vector<vector<float>> &left, vector<vector<float>> &right) {
+    for (auto it = begin(dataset);it != end(dataset);it++){
+        if ((*it)[index] <= value){
+            left.push_back(*it);
+        }
+        else {
+            right.push_back(*it);
+        }
+    }
+    }
+
   best_split get_best_split(vector<vector<float>> &data,int num_samples,int num_features){
     float max_gain = INT_MIN;
     best_split best;
@@ -147,9 +147,9 @@ public:
   }
 
   float gini_gain(vector<float> &Y,vector<float> &left_Y,vector<float> &right_Y){
-    float weight_l = left_Y.size() / Y.size();
-    float weight_r = right_Y.size() / Y.size();
-    return  gini_impurity(Y) - (weight_l*gini_impurity(left_Y) +weight_r*gini_impurity(right_Y)); 
+    float weight_l = float(left_Y.size()) / Y.size();
+    float weight_r = float(right_Y.size()) / Y.size();
+    return gini_impurity(Y) - (weight_l*gini_impurity(left_Y) +weight_r*gini_impurity(right_Y));
   }
 
   float gini_impurity(vector<float> &Y){
@@ -158,7 +158,7 @@ public:
     vector<float> uniques;
     uniques.assign(s.begin(),s.end());
     for (auto it = begin(uniques); it!= end(uniques);it++){
-        auto per_class = count(Y.begin(), Y.end(), *it)/Y.size();
+        auto per_class = float(count(Y.begin(), Y.end(), *it))/Y.size();
         gini+= per_class*per_class;
     }
     return 1 - gini;

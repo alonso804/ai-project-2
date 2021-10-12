@@ -12,7 +12,7 @@ public:
 		vector<vector<float>> dataset;
 
         file.open(fileName, ios::in);
-        getline(file, line, '\n');
+//        getline(file, line, '\n');
 
 		if (file.is_open()) {
 			while (getline(file, line, '\n')) {
