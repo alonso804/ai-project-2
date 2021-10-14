@@ -164,22 +164,20 @@ public:
     return 1 - gini;
   }
 
-  float calculate_leaf_value(vector<float> Y){
-    sort(Y.begin(),Y.end());
-    float max_value_repeated;
-    int max_times_repeated = 0;
-    int current = 0;
-    for (auto it = begin(Y); it!= end(Y)-1; it++){
-      if (*it == *(it+1)){
-        current++;
-        if (current > max_times_repeated){
-          max_times_repeated = current;
-          max_value_repeated = *it;
+    float calculate_leaf_value(vector<float> Y){
+        sort(Y.begin(),Y.end());
+        float max_val = Y[0];
+        map<float, int> frec;
+
+        for(auto it : Y){
+            frec[it]++;
         }
-      }
+        for(int i = 0; i<Y.size() ; i++){
+            if(frec[Y[i]] < frec[Y[i+1]])
+                max_val = Y[i+1];
+        }
+        return max_val;
     }
-    return max_value_repeated;
-  }
 
   void traverse_tree(Node *node, int cont = 0){
       if (node == nullptr) return;
@@ -195,7 +193,9 @@ public:
   }
 
   void print(){
-    traverse_tree(this->root);
+      cout << "∧: No" << endl;
+      cout << "∨: Yes" << endl;
+      traverse_tree(this->root);
   }
   ~DecisionTree() {}
 };

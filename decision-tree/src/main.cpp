@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 	}
 	*/
 
-	auto decisionTree = DecisionTree("iris.csv",3,3);
+	auto decisionTree = DecisionTree("gender_classification.csv",3,3);
 	decisionTree.print();
 	return 0;
 }

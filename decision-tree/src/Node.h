@@ -29,11 +29,11 @@ struct Node{
 
   void print(){
     if (!this->right && !this->left){
-        if(this->value == 1) cout << "Iris-setosa";
-        if(this->value == -1) cout << "Iris-versicolor";
+        if(this->value == 1) cout << "Male";
+        if(this->value == -1) cout << "Female";
     }
     else{
-      cout<<"X_"<<this-> feature_index<<" <= "<<value<<", gini: "<<this->gini_gain;
+      cout<<"X_"<<this-> feature_index+1<<" <= "<<value<<", gini: "<<this->gini_gain;
     }
   }
 
