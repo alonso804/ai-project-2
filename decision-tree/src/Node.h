@@ -20,7 +20,7 @@ struct Node{
     this-> value = value;
     this->left = left;
     this->right = right;
-    this-> gini_gain;
+    this-> gini_gain = gini_gain;
   }
 
   Node(float value){
@@ -29,10 +29,11 @@ struct Node{
 
   void print(){
     if (!this->right && !this->left){
-      cout<<this->value<<endl;
+        if(this->value == 1) cout << "Iris-setosa";
+        if(this->value == -1) cout << "Iris-versicolor";
     }
     else{
-      cout<<"X_"<<this-> feature_index<<" <= "<<value<<", gini: "<<this->gini_gain<<endl;
+      cout<<"X_"<<this-> feature_index<<" <= "<<value<<", gini: "<<this->gini_gain;
     }
   }
 

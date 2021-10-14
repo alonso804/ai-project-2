@@ -27,7 +27,7 @@ class DecisionTree {
   int max_depth;  
   vector<vector<float>> data;
   int n_features;
-  Node *root;
+  Node *root = nullptr;
 
 public:
   DecisionTree(string fileName,int min_samples_split, int max_depth) {
@@ -137,7 +137,7 @@ public:
           float curr_gain = gini_gain(Y, left_Y,right_Y);
 
           if (curr_gain > max_gain){
-            best.set(i,*it,data_left,data_left,curr_gain);
+            best.set(i,*it,data_left,data_right,curr_gain);
             max_gain = curr_gain;
           }
         }
@@ -181,18 +181,17 @@ public:
     return max_value_repeated;
   }
 
-  void traverse_tree(Node *node, int indent = 1){
-    if (node){
+  void traverse_tree(Node *node, int cont = 0){
+      if (node == nullptr) return;
+      else {
+          traverse_tree(node->right, cont+1);
+          for (int i = 0; i < cont; i++) {
+              cout << "|" << "                       ";
+          }
+      }
       node->print();
-      for (int i = 0;i<indent;i++)
-        cout<<"\t";
-      cout<<"left:";
-      traverse_tree(node->left,indent+indent);
-      for (int i = 0;i<indent;i++)
-        cout<<"\t";
-      cout<<"right:";
-      traverse_tree(node->right,indent+indent);
-    }
+      cout << "--|" << endl;
+      traverse_tree(node->left, cont + 1);
   }
 
   void print(){

@@ -21,10 +21,10 @@ public:
 				string word;
  
  				while (getline(s, word, delimiter)) {
-					if (word.length() == 11){
+					if (word.length() == 5 || word.length() == 12){
 						word = "1";
 					}
-					else if (word.length() == 15){
+					else if (word.length() == 7 || word.length() == 16){
 						word = "-1";
 					}
 					row.push_back(stof(word));
