@@ -11,7 +11,7 @@ public:
 		string line;
 		vector<vector<float>> dataset;
 
-        file.open(fileName, ios::in);
+		file.open(fileName, ios::in);
 //        getline(file, line, '\n');
 
 		if (file.is_open()) {
@@ -21,13 +21,14 @@ public:
 				string word;
  
  				while (getline(s, word, delimiter)) {
-					if (word.length() == 5 || word.length() == 12){
-						word = "1";
+					if (word.size() == 4 || word.size() == 12){
+						row.push_back(1.0);
 					}
-					else if (word.length() == 7 || word.length() == 16){
-						word = "-1";
+					else if (word.size() == 6 || word.size() == 16){
+						row.push_back(-1.0);
+					} else {
+						row.push_back(stof(word));
 					}
-					row.push_back(stof(word));
 				}
  
 				dataset.push_back(row);
