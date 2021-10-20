@@ -196,6 +196,23 @@ public:
       traverse_tree(node->left, cont + 1);
   }
 
+  vector<float> predict(vector<vector<float>> &X){
+    vector<float> predictions;
+    for (auto &it:X){
+      predictions.push_back(make_prediction(it,this->root));
+    }
+    return predictions;
+  }
+
+  float make_prediction(vector<float> &row, Node * node){
+      if (node->value ==1 || node->value == -1){
+          return node->value;
+      }
+      float feature_value = row[node->feature_index];
+      if (feature_value<= node->value) return make_prediction(row,node->left);
+      else return make_prediction(row,node->right);
+  }
+
   void print(){
       cout << "∧: No" << endl;
       cout << "∨: Yes" << endl;
