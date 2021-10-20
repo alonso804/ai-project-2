@@ -239,7 +239,7 @@ public:
     if (node) {
       if (node->idx >= 0) {
         file << "\"" << node->idx << "\" [\n";
-        file << "\tlabel = \"" << "X_"<< node->feature_index+1<<" <= "<<node->value<<", gini: "<<node->gini_gain << " \"\n]\n";
+        file << "\tlabel = \"" << "X_"<< node->feature_index+1 <<"<= "<<node->value  << " \"\n]\n";
       } else {
         file << "\"" << node->idx << "\" [\n";
         if (node->value == 1) {

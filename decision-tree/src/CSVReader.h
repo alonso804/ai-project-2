@@ -21,10 +21,10 @@ public:
 				string word;
  
  				while (getline(s, word, delimiter)) {
-					if (word.size() == 5 || word.size() == 12){
+					if (word.size() == 4 || word.size() == 5 || word.size() == 12){
 						row.push_back(1.0);
 					}
-					else if (word.size() == 7 || word.size() == 16){
+					else if (word.size() == 6 || word.size() == 7 || word.size() == 16){
 						row.push_back(-1.0);
 					} else {
 						row.push_back(stof(word));
