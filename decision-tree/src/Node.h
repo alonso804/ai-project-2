@@ -11,20 +11,23 @@ struct Node{
   Node* left = nullptr;
   Node* right = nullptr;
   float gini_gain;
+  int idx;
 
   //leaf Node
   float value;
 
-  Node(int feature_index,float value, Node *left, Node *right, float gini_gain){
+  Node(int feature_index,float value, Node *left, Node *right, float gini_gain, int idx){
     this->feature_index = feature_index;
     this-> value = value;
     this->left = left;
     this->right = right;
     this-> gini_gain = gini_gain;
+    this->idx = idx;
   }
 
-  Node(float value){
+  Node(float value, int leafIdx){
     this->value = value;
+    this->idx = leafIdx;
   }
 
   void print(){
@@ -33,7 +36,7 @@ struct Node{
         if(this->value == -1) cout << "Female";
     }
     else{
-      cout<<"X_"<<this-> feature_index+1<<" <= "<<value<<", gini: "<<this->gini_gain;
+      cout << "X_"<<this-> feature_index+1<<" <= "<<value<<", gini: "<<this->gini_gain;
     }
   }
 

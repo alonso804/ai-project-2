@@ -28,9 +28,13 @@ class DecisionTree {
   vector<vector<float>> data;
   int n_features;
   Node *root = nullptr;
+  int idx;
+  int leafIdx;
 
 public:
   DecisionTree(string fileName,int min_samples_split, int max_depth) {
+    this->idx = 0;
+    this->leafIdx = -1;
 	  this->data = CSVReader::read(fileName);
     this->min_samples_split = min_samples_split;
     n_features = this->data[0].size() - 1;
@@ -78,13 +82,13 @@ public:
         auto right_subtree = build_tree(best_split.data_right,curr_depth+1);
 
         auto node = new Node(best_split.feature_index,best_split.value,
-        left_subtree,right_subtree,best_split.gini_gain);
+        left_subtree,right_subtree,best_split.gini_gain, idx++);
         return node;
 
       }
     }
     float leaf_value = calculate_leaf_value(Y);
-    auto node = new Node(leaf_value);
+    auto node = new Node(leaf_value, leafIdx--);
     return node;
 
   }
@@ -197,6 +201,60 @@ public:
       cout << "∨: Yes" << endl;
       traverse_tree(this->root);
   }
+
+	void printNodesConnections(fstream &file, Node*& node) {
+    if (node) {
+        if(node->left){
+          file << "\"" << node->idx << "\"->";
+          file << "\"" << node->left->idx << "\";\n";
+          printNodesConnections(file, node->left);
+        }
+
+        if(node->right) {
+          file << "\"" << node->idx << "\"->";
+          file << "\"" << node->right->idx << "\";\n";
+          printNodesConnections(file, node->right);
+        }
+    }
+	}
+
+	void printAllNodes(fstream &file, Node*& node){
+    if (node) {
+      if (node->idx >= 0) {
+        file << "\"" << node->idx << "\" [\n";
+        file << "\tlabel = \"" << "X_"<< node->feature_index+1<<" <= "<<node->value<<", gini: "<<node->gini_gain << " \"\n]\n";
+      } else {
+        file << "\"" << node->idx << "\" [\n";
+        if (node->value == 1) {
+          file << "\tlabel = \"" << "Male" << " \"\n]\n";
+        } else if (node->value == -1) {
+          file << "\tlabel = \"" << "Female" << " \"\n]\n";
+        }
+      }
+
+        if(node->left) {
+            printAllNodes(file, node->left);
+        }
+
+        if(node->right) {
+            printAllNodes(file, node->right);
+        }
+    }
+	}
+
+  void generatePDF() {
+      fstream file("graph.vz", fstream::out | fstream::trunc);
+      if (file.is_open()) {
+          file << "digraph G\n";
+          file << "{\n";
+          printAllNodes(file, root);
+          printNodesConnections(file, root);
+          file << "}\n";
+          file.close();
+          system("dot -Tpdf graph.vz -o graph.pdf");
+      }
+  }
+
   ~DecisionTree() {}
 };
 

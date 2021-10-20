@@ -13,5 +13,6 @@ int main(int argc, char *argv[]) {
 
 	auto decisionTree = DecisionTree("gender_classification.csv",3,3);
 	decisionTree.print();
+	decisionTree.generatePDF();
 	return 0;
 }
