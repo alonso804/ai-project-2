@@ -6,7 +6,7 @@ if __name__ == "__main__":
 
     epoch = 1000
     alpha = 0.001
-    lagrage = 0.001
+    lagrage = 5
     C = 1
 
     svm = SVM(x, y, epoch, alpha, lagrage, C)
