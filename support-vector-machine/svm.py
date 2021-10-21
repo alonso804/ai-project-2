@@ -29,12 +29,12 @@ class SVM:
     def hypothesis(self, w, b, x):
         return np.dot(w, x) + b
 
-    def error(self, w, b, x):
+    def error(self, w, b, x, y):
         err = 0
 
         m = len(x)
         for i in range(m):
-            err += max(0, 1 - self.y[i] * self.hypothesis(w, b, x[i]))
+            err += max(0, 1 - y[i] * self.hypothesis(w, b, x[i]))
 
         err = (np.linalg.norm(w, 2)) / 2 + self.lagrage * err
 
@@ -60,9 +60,10 @@ class SVM:
         errorListTest = []
 
         for _ in range(self.epoch):
-            # errorListTrain.append(self.error(w, b, self.xTrain))
-            # errorListValidation.append(self.error(w, b, self.xValidation))
-            # errorListTest.append(self.error(w, b, self.xTest))
+            errorListTrain.append(self.error(w, b, self.xTrain, self.yTrain))
+            errorListValidation.append(self.error(
+                w, b, self.xValidation, self.yValidation))
+            errorListTest.append(self.error(w, b, self.xTest, self.yTest))
 
             randomRow = np.random.randint(len(self.xTrain))
             x = self.xTrain[randomRow]
@@ -113,9 +114,9 @@ class SVM:
         print(validationMatrix)
         print("Accuracy:", validationAccuracy)
 
-        # plt.plot(errorListTrain, label="Training")
-        # plt.plot(errorListValidation, label="Validation")
-        # plt.plot(errorListTest, label="Testing")
+        plt.plot(errorListTrain, label="Training")
+        plt.plot(errorListValidation, label="Validation")
+        plt.plot(errorListTest, label="Testing")
 
-        # plt.legend()
-        # plt.show()
+        plt.legend()
+        plt.show()
