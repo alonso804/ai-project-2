@@ -22,6 +22,8 @@ class LogisticRegression:
         self.xTest = x[percentage(rowsAmount, 90):]
 
     def hypothesis(self, w, x):
+        np.append(x, 1)
+        # print(len(x))
         return np.dot(w, x)
 
     def derivate(self, w, x):
@@ -40,16 +42,15 @@ class LogisticRegression:
     def s(self, w, xi):
         return 1 / (1 + math.e ** (-self.hypothesis(w, xi)))
 
-    def error(self, w, x):
+    def cost(self, w, x):
         err = 0
         m = len(x)
 
         for i in range(m):
-            err += (self.y[i][0] * math.log(self.s(w, x[i])) + (1 - y[i][0]) * math.log(1 - self.s(w, x[i]))
+            err += (self.y[i][0] * math.log(self.s(w, x[i]))) + \
+                (1 - y[i][0] * math.log(1 - self.s(w, x[i])))
 
-        print(err)
-        err *= (- 1 / m)
-
+        err *= (-1 / m)
         return err
 
     def update(self, w, dw):
@@ -59,29 +60,31 @@ class LogisticRegression:
         return w
 
     def train(self):
-        w=[np.random.rand() for i in range(self.k)]
-        b=np.random.rand()
-        
+        w = [np.random.rand() for i in range(self.k)]
+        print(len(w))
+        b = np.random.rand()
+        print(len(w))
+
         w.append(b)
-        for row in xTrain:
-            row.append(1)
+        # for row in self.xTrain:
+        # np.append(row, 1)
 
-        errTrain=self.error(w, self.xTrain)
-        errValidation=self.error(w, self.xValidation)
-        errTest=self.error(w, self.xTest)
+        errTrain = self.cost(w, self.xTrain)
+        errValidation = self.cost(w, self.xValidation)
+        errTest = self.cost(w, self.xTest)
 
-        errorListTrain=[errTrain]
-        errorListValidation=[errValidation]
-        errorListTest=[errTest]
+        errorListTrain = [errTrain]
+        errorListValidation = [errValidation]
+        errorListTest = [errTest]
 
         for i in range(self.epoch):
-            dw=self.derivate(w, self.xTrain)
+            dw = self.derivate(w, self.xTrain)
 
-            w=self.update(w, dw)
+            w = self.update(w, dw)
 
-            errTrain=self.error(w, self.xTrain)
-            errValidation=self.error(w, self.xValidation)
-            errTest=self.error(w, self.xTest)
+            errTrain = self.cost(w, self.xTrain)
+            errValidation = self.cost(w, self.xValidation)
+            errTest = self.cost(w, self.xTest)
 
             # Animation
             """

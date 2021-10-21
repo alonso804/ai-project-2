@@ -1,6 +1,6 @@
 import numpy as np
 from functions import passData, normalize, shuffle
-from regression import MultivariateRegression
+from regression import LogisticRegression
 
 
 if __name__ == "__main__":
@@ -14,4 +14,4 @@ if __name__ == "__main__":
     alpha = 0.001
 
     e1 = LogisticRegression(shuffleX, shuffleY, epoch, alpha)
-    # e1.train()
+    e1.train()
