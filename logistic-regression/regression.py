@@ -21,71 +21,67 @@ class LogisticRegression:
 
         self.xTest = x[percentage(rowsAmount, 90):]
 
-    def hypothesis(self, w, b, x):
-        return np.dot(w, x) + b
+    def hypothesis(self, w, x):
+        return np.dot(w, x)
 
-    def derivate(self, w, b, x):
+    def derivate(self, w, x):
         m = len(x)
-
-        db = 0
-
-        for i in range(m):
-            db += (self.y[i][0] - self.hypothesis(w, b, x[i])) * (-1)
-
-        db /= m
 
         dw = [0] * self.k
 
         for i in range(self.k):
             for j in range(m):
-                dw[i] += self.s(w, b, x[j]) - self.y[j][0]
+                dw[i] += self.s(w, x[j]) - self.y[j][0]
 
             dw[i] *= (x[i] / m)
 
-        return db, dw
+        return dw
 
-    def s(self, w, b, xi):
-        return 1 / (1 + math.e ** (-self.hypothesis(w, b, xi)))
+    def s(self, w, xi):
+        return 1 / (1 + math.e ** (-self.hypothesis(w, xi)))
 
-    def error(self, w, b, x):
+    def error(self, w, x):
         err = 0
         m = len(x)
 
         for i in range(m):
-            err += (self.y[i][0] * math.log(self.s(w, b, x[i])) + (1 - y[i][0]) * math.log(1 - self.s(w, b, x[i]))
+            err += (self.y[i][0] * math.log(self.s(w, x[i])) + (1 - y[i][0]) * math.log(1 - self.s(w, x[i]))
 
+        print(err)
         err *= (- 1 / m)
 
         return err
 
-    def update(self, b, db, w, dw):
+    def update(self, w, dw):
         for i in range(self.k):
             w[i] -= (self.alpha * dw[i])
 
-        b -= (self.alpha * db)
-
-        return b, w
+        return w
 
     def train(self):
         w=[np.random.rand() for i in range(self.k)]
         b=np.random.rand()
+        
+        w.append(b)
+        for row in xTrain:
+            row.append(1)
 
-        errTrain=self.error(w, b, self.xTrain)
-        errValidation=self.error(w, b, self.xValidation)
-        errTest=self.error(w, b, self.xTest)
+        errTrain=self.error(w, self.xTrain)
+        errValidation=self.error(w, self.xValidation)
+        errTest=self.error(w, self.xTest)
 
         errorListTrain=[errTrain]
         errorListValidation=[errValidation]
         errorListTest=[errTest]
 
         for i in range(self.epoch):
-            db, dw=self.derivate(w, b, self.xTrain)
+            dw=self.derivate(w, self.xTrain)
 
-            b, w=self.update(b, db, w, dw)
+            w=self.update(w, dw)
 
-            errTrain=self.error(w, b, self.xTrain)
-            errValidation=self.error(w, b, self.xValidation)
-            errTest=self.error(w, b, self.xTest)
+            errTrain=self.error(w, self.xTrain)
+            errValidation=self.error(w, self.xValidation)
+            errTest=self.error(w, self.xTest)
 
             # Animation
             """
