@@ -21,70 +21,75 @@ class LogisticRegression:
 
         self.xTest = x[percentage(rowsAmount, 90):]
 
+        self.yTrain = y[:percentage(rowsAmount, 70)]
+        self.yValidation = y[percentage(
+            rowsAmount, 70):percentage(rowsAmount, 90)]
+        self.yTest = y[percentage(rowsAmount, 90):]
+
     def hypothesis(self, w, x):
-        np.append(x, 1)
-        # print(len(x))
         return np.dot(w, x)
 
-    def derivate(self, w, x):
+    def derivate(self, w, x, y):
         m = len(x)
+        print(m)
 
-        dw = [0] * self.k
+        dw = [0] * (self.k + 1)
 
-        for i in range(self.k):
+        for i in range(self.k + 1):
             for j in range(m):
-                dw[i] += self.s(w, x[j]) - self.y[j][0]
+                dw[i] += self.s(w, x[j]) - y[j][0]
 
             dw[i] *= (x[i] / m)
 
+        print(dw)
         return dw
 
     def s(self, w, xi):
         return 1 / (1 + math.e ** (-self.hypothesis(w, xi)))
 
-    def cost(self, w, x):
+    def cost(self, w, x, y):
+        # print(x)
         err = 0
         m = len(x)
 
+        # Por aqui esta el error =======================================
         for i in range(m):
-            err += (self.y[i][0] * math.log(self.s(w, x[i]))) + \
-                (1 - y[i][0] * math.log(1 - self.s(w, x[i])))
+            s = self.s(w, x[i])
+            # if i == 0:
+            # print(w)
+            # print(x[i])
+            # print(i, s)
+            # print()
+            err += (y[i][0] * math.log(s)) + \
+                (1 - y[i][0] * math.log(1 - s))
 
         err *= (-1 / m)
+
         return err
 
     def update(self, w, dw):
-        for i in range(self.k):
+        for i in range(self.k + 1):
             w[i] -= (self.alpha * dw[i])
 
         return w
 
     def train(self):
         w = [np.random.rand() for i in range(self.k)]
-        print(len(w))
         b = np.random.rand()
-        print(len(w))
 
         w.append(b)
-        # for row in self.xTrain:
-        # np.append(row, 1)
 
-        errTrain = self.cost(w, self.xTrain)
-        errValidation = self.cost(w, self.xValidation)
-        errTest = self.cost(w, self.xTest)
+        self.xTrain = [np.append(row, 1) for row in self.xTrain]
 
-        errorListTrain = [errTrain]
-        errorListValidation = [errValidation]
-        errorListTest = [errTest]
+        errorListTrain = [self.cost(w, self.xTrain, self.yTrain)]
+        # errorListValidation = [
+        # self.cost(w, self.xValidation, self.yValidation)]
+        # errorListTest = [self.cost(w, self.xTest, self.yTest)]
 
         for i in range(self.epoch):
-            dw = self.derivate(w, self.xTrain)
+            dw = self.derivate(w, self.xTrain, self.yTrain)
 
             w = self.update(w, dw)
-
-            errTrain = self.cost(w, self.xTrain)
-            errValidation = self.cost(w, self.xValidation)
-            errTest = self.cost(w, self.xTest)
 
             # Animation
             """
@@ -103,20 +108,20 @@ class LogisticRegression:
             print()
             """
 
-            errorListTrain.append(errTrain)
-            errorListValidation.append(errValidation)
-            errorListTest.append(errTest)
+            errorListTrain.append(self.cost(w, self.xTrain, self.yTrain))
+            # errorListValidation.append(self.cost(w, self.xValidation, self.yValidation))
+            # errorListTest.append(self.cost(w, self.xTest, self.yTest))
 
         # Graph
-        plt.plot(errorListTrain, label="Training")
-        plt.plot(errorListValidation, label="Validation")
-        plt.plot(errorListTest, label="Testing")
+        # plt.plot(errorListTrain, label="Training")
+        # plt.plot(errorListValidation, label="Validation")
+        # plt.plot(errorListTest, label="Testing")
 
-        plt.legend()
+        # plt.legend()
 
         """
         ys = [self.hypothesis(w, b, xi) for xi in self.x]
         plt.plot(self.y, '*')
         plt.plot(ys, '*')
         """
-        plt.show()
+        # plt.show()
