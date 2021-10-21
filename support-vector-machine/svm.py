@@ -60,9 +60,9 @@ class SVM:
         errorListTest = []
 
         for _ in range(self.epoch):
-            errorListTrain.append(self.error(w, b, self.xTrain))
-            errorListValidation.append(self.error(w, b, self.xValidation))
-            errorListTest.append(self.error(w, b, self.xTest))
+            # errorListTrain.append(self.error(w, b, self.xTrain))
+            # errorListValidation.append(self.error(w, b, self.xValidation))
+            # errorListTest.append(self.error(w, b, self.xTest))
 
             randomRow = np.random.randint(len(self.xTrain))
             x = self.xTrain[randomRow]
@@ -74,23 +74,48 @@ class SVM:
                 w[i] -= self.alpha * dw
                 b -= self.alpha * db
 
+        predTrain = [1 if self.hypothesis(
+            w, b, xi) >= 0 else -1 for xi in self.xTrain]
+        predValidation = [1 if self.hypothesis(
+            w, b, xi) >= 0 else -1 for xi in self.xValidation]
         predTest = [1 if self.hypothesis(
             w, b, xi) >= 0 else -1 for xi in self.xTest]
         predValidation = [1 if self.hypothesis(
             w, b, xi) >= 0 else -1 for xi in self.xValidation]
 
-        yTest = [yi[0] for yi in self.yTest]
+        yTrain = [yi[0] for yi in self.yTrain]
         yValidation = [yi[0] for yi in self.yValidation]
+        yTest = [yi[0] for yi in self.yTest]
 
+        trainMatrix = confusion_matrix(yTrain, predTrain)
+        testMatrix = confusion_matrix(yTest, predTest)
+        validationMatrix = confusion_matrix(yValidation, predValidation)
+
+        trainAccuracy = (trainMatrix[0][1] +
+                         trainMatrix[1][0]) / len(predTrain)
+        testAccuracy = (testMatrix[0][1] + testMatrix[1][0]) / len(predTest)
+        validationAccuracy = (
+            validationMatrix[0][1] + validationMatrix[1][0]) / len(predValidation)
+
+        trainAccuracy = 100 - trainAccuracy
+        testAccuracy = 100 - testAccuracy
+        validationAccuracy = 100 - validationAccuracy
+
+        print("Train")
+        print(trainMatrix)
+        print("Accuracy:", trainAccuracy)
+        print()
         print("Testing")
-        print(confusion_matrix(yTest, predTest))
+        print(testMatrix)
+        print("Accuracy:", testAccuracy)
         print()
         print("Validation")
-        print(confusion_matrix(yValidation, predValidation))
+        print(validationMatrix)
+        print("Accuracy:", validationAccuracy)
 
-        plt.plot(errorListTrain, label="Training")
-        plt.plot(errorListValidation, label="Validation")
-        plt.plot(errorListTest, label="Testing")
+        # plt.plot(errorListTrain, label="Training")
+        # plt.plot(errorListValidation, label="Validation")
+        # plt.plot(errorListTest, label="Testing")
 
-        plt.legend()
-        plt.show()
+        # plt.legend()
+        # plt.show()
