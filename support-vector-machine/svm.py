@@ -31,22 +31,24 @@ class SVM:
 
     def error(self, w, b, x):
         err = 0
+
         m = len(x)
         for i in range(m):
             err += max(0, 1 - self.y[i] * self.hypothesis(w, b, x[i]))
 
         err = (np.linalg.norm(w, 2)) / 2 + self.lagrage * err
+
         return err
 
-    def derivate(self, w, b, x, y, row):
+    def derivate(self, w, b, x, y, column):
         dw = 0
         db = 0
 
         if y * self.hypothesis(w, b, x) > 1:
-            dw = w[row]
+            dw = w[column]
         else:
-            dw = w[row] - y * x[row] * self.C
-            db = y * self.C
+            dw = w[column] - y * x[column] * self.C
+            db = (-1) * y * self.C
 
         return dw, db
 
