@@ -8,11 +8,10 @@ if __name__ == "__main__":
 
     epoch = 2000
     alpha = 0.001
-    lagrage = 1
     C = 1
 
     np.random.seed(0)
     shuffleX, shuffleY = shuffle(x, y)
 
-    svm = SVM(shuffleX, shuffleY, epoch, alpha, lagrage, C)
+    svm = SVM(shuffleX, shuffleY, epoch, alpha, C)
     svm.train()

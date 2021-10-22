@@ -5,13 +5,12 @@ from sklearn.metrics import confusion_matrix
 
 
 class SVM:
-    def __init__(self, x, y, epoch, alpha, lagrage, C):
+    def __init__(self, x, y, epoch, alpha, C):
         self.k = len(x[0])
         self.x = x
         self.y = y
         self.epoch = epoch
         self.alpha = alpha
-        self.lagrage = lagrage
         self.C = C
 
         rowsAmount = len(y)
@@ -29,7 +28,7 @@ class SVM:
         for i in range(m):
             err += max(0, 1 - y[i] * self.hypothesis(w, b, x[i]))
 
-        err = (np.linalg.norm(w, 2)) / 2 + self.lagrage * err
+        err = (np.linalg.norm(w, 2)) / 2 + self.C * err
 
         return err
 
