@@ -25,6 +25,7 @@ class SVM:
         err = 0
 
         m = len(x)
+
         for i in range(m):
             err += max(0, 1 - y[i] * self.hypothesis(w, b, x[i]))
 
@@ -50,20 +51,35 @@ class SVM:
     def real(self, y):
         return [yi[0] for yi in y]
 
+    def report(self, train, val, test):
+        print("Train")
+        print(train[0])
+        print("Accuracy:", train[1])
+        print()
+
+        print("Validation")
+        print(val[0])
+        print("Accuracy:", val[1])
+        print()
+
+        print("Testing")
+        print(test[0])
+        print("Accuracy:", test[1])
+        print()
+
     def train(self):
         w = [np.random.rand() for i in range(self.k)]
         b = np.random.rand()
 
         errorTrain = []
         errorVal = []
-        errorTest = []
+        errorTest = []  # TODO separar
 
         for _ in range(self.epoch):
             errorTrain.append(self.error(w, b, self.xTrain, self.yTrain))
             errorVal.append(self.error(w, b, self.xVal, self.yVal))
-            errorTest.append(self.error(w, b, self.xTest, self.yTest))
 
-            randomRow = np.random.randint(len(self.xTrain))
+            randomRow = np.random.randint(len(self.xTrain))  # ADAM
             x = self.xTrain[randomRow]
             y = self.yTrain[randomRow][0]
 
@@ -72,6 +88,9 @@ class SVM:
 
                 w[i] -= self.alpha * dw
                 b -= self.alpha * db
+
+        for _ in range(self.epoch):
+            errorTest.append(self.error(w, b, self.xTest, self.yTest))
 
         predTrain = self.predict(w, b, self.xTrain)
         predVal = self.predict(w, b, self.xVal)
@@ -89,17 +108,9 @@ class SVM:
         valAccuracy = getAccuracy(valMatrix)
         testAccuracy = getAccuracy(testMatrix)
 
-        print("Train")
-        print(trainMatrix)
-        print("Accuracy:", trainAccuracy)
-        print()
-        print("Testing")
-        print(testMatrix)
-        print("Accuracy:", testAccuracy)
-        print()
-        print("Validation")
-        print(valMatrix)
-        print("Accuracy:", valAccuracy)
+        self.report((trainMatrix, trainAccuracy),
+                    (valMatrix, valAccuracy),
+                    (testMatrix, testAccuracy))
 
         plt.plot(errorTrain, label="Training")
         plt.plot(errorVal, label="Validation")
