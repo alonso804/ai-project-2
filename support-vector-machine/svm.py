@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from functions import percentage
+from functions import splitData, getAccuracy
 from sklearn.metrics import confusion_matrix
 
 
@@ -16,15 +16,8 @@ class SVM:
 
         rowsAmount = len(y)
 
-        self.xTrain = x[:percentage(rowsAmount, 70)]
-        self.xValidation = x[percentage(
-            rowsAmount, 70):percentage(rowsAmount, 90)]
-        self.xTest = x[percentage(rowsAmount, 90):]
-
-        self.yTrain = y[:percentage(rowsAmount, 70)]
-        self.yValidation = y[percentage(
-            rowsAmount, 70):percentage(rowsAmount, 90)]
-        self.yTest = y[percentage(rowsAmount, 90):]
+        self.xTrain, self.xVal, self.xTest = splitData(x, 70, 20, 10)
+        self.yTrain, self.yVal, self.yTest = splitData(y, 70, 20, 10)
 
     def hypothesis(self, w, b, x):
         return np.dot(w, x) + b
@@ -52,18 +45,24 @@ class SVM:
 
         return dw, db
 
+    def predict(self, w, b, x):
+        return [1 if self.hypothesis(w, b, xi) >= 0 else -1 for xi in x]
+
+    def real(self, y):
+        return [yi[0] for yi in y]
+
     def train(self):
         w = [np.random.rand() for i in range(self.k)]
         b = np.random.rand()
-        errorListTrain = []
-        errorListValidation = []
-        errorListTest = []
+
+        errorTrain = []
+        errorVal = []
+        errorTest = []
 
         for _ in range(self.epoch):
-            errorListTrain.append(self.error(w, b, self.xTrain, self.yTrain))
-            errorListValidation.append(self.error(
-                w, b, self.xValidation, self.yValidation))
-            errorListTest.append(self.error(w, b, self.xTest, self.yTest))
+            errorTrain.append(self.error(w, b, self.xTrain, self.yTrain))
+            errorVal.append(self.error(w, b, self.xVal, self.yVal))
+            errorTest.append(self.error(w, b, self.xTest, self.yTest))
 
             randomRow = np.random.randint(len(self.xTrain))
             x = self.xTrain[randomRow]
@@ -75,32 +74,21 @@ class SVM:
                 w[i] -= self.alpha * dw
                 b -= self.alpha * db
 
-        predTrain = [1 if self.hypothesis(
-            w, b, xi) >= 0 else -1 for xi in self.xTrain]
-        predValidation = [1 if self.hypothesis(
-            w, b, xi) >= 0 else -1 for xi in self.xValidation]
-        predTest = [1 if self.hypothesis(
-            w, b, xi) >= 0 else -1 for xi in self.xTest]
-        predValidation = [1 if self.hypothesis(
-            w, b, xi) >= 0 else -1 for xi in self.xValidation]
+        predTrain = self.predict(w, b, self.xTrain)
+        predVal = self.predict(w, b, self.xVal)
+        predTest = self.predict(w, b, self.xTest)
 
-        yTrain = [yi[0] for yi in self.yTrain]
-        yValidation = [yi[0] for yi in self.yValidation]
-        yTest = [yi[0] for yi in self.yTest]
+        yTrain = self.real(self.yTrain)
+        yVal = self.real(self.yVal)
+        yTest = self.real(self.yTest)
 
         trainMatrix = confusion_matrix(yTrain, predTrain)
+        valMatrix = confusion_matrix(yVal, predVal)
         testMatrix = confusion_matrix(yTest, predTest)
-        validationMatrix = confusion_matrix(yValidation, predValidation)
 
-        trainAccuracy = (trainMatrix[0][1] +
-                         trainMatrix[1][0]) / len(predTrain)
-        testAccuracy = (testMatrix[0][1] + testMatrix[1][0]) / len(predTest)
-        validationAccuracy = (
-            validationMatrix[0][1] + validationMatrix[1][0]) / len(predValidation)
-
-        trainAccuracy = 100 - trainAccuracy
-        testAccuracy = 100 - testAccuracy
-        validationAccuracy = 100 - validationAccuracy
+        trainAccuracy = getAccuracy(trainMatrix)
+        valAccuracy = getAccuracy(valMatrix)
+        testAccuracy = getAccuracy(testMatrix)
 
         print("Train")
         print(trainMatrix)
@@ -111,12 +99,12 @@ class SVM:
         print("Accuracy:", testAccuracy)
         print()
         print("Validation")
-        print(validationMatrix)
-        print("Accuracy:", validationAccuracy)
+        print(valMatrix)
+        print("Accuracy:", valAccuracy)
 
-        plt.plot(errorListTrain, label="Training")
-        plt.plot(errorListValidation, label="Validation")
-        plt.plot(errorListTest, label="Testing")
+        plt.plot(errorTrain, label="Training")
+        plt.plot(errorVal, label="Validation")
+        plt.plot(errorTest, label="Testing")
 
         plt.legend()
         plt.show()

@@ -6,7 +6,7 @@ if __name__ == "__main__":
     x, y = passData('gender_classification.csv')
     x[:, [1, 2]] = normalize(x[:, [1, 2]])
 
-    epoch = 1000
+    epoch = 2000
     alpha = 0.001
     lagrage = 1
     C = 1

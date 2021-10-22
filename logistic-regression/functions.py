@@ -33,3 +33,17 @@ def percentage(length, fraction):
 def shuffle(x, y):
     p = np.random.permutation(len(x))
     return x[p], y[p]
+
+
+def splitData(dataset, train, validation, test):
+    rowsAmount = len(dataset)
+    dTrain = dataset[:percentage(rowsAmount, train)]
+    dValidation = dataset[percentage(rowsAmount, train):percentage(
+        rowsAmount, train + validation)]
+    dTest = dataset[percentage(rowsAmount, 100 - test):]
+
+    return dTrain, dValidation, dTest
+
+
+def getAccuracy(confusionMatrix):
+    return (confusionMatrix[0][0] + confusionMatrix[1][1]) / (confusionMatrix[0][0] + confusionMatrix[0][1] + confusionMatrix[1][0] + confusionMatrix[1][1]) * 100

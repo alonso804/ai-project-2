@@ -1,7 +1,8 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from functions import percentage
+from functions import splitData, getAccuracy
+from sklearn.metrics import confusion_matrix
 
 
 class LogisticRegression:
@@ -12,56 +13,35 @@ class LogisticRegression:
         self.epoch = epoch
         self.alpha = alpha
 
-        rowsAmount = len(x)
-
-        self.xTrain = x[:percentage(rowsAmount, 70)]
-
-        self.xValidation = x[percentage(
-            rowsAmount, 70):percentage(rowsAmount, 90)]
-
-        self.xTest = x[percentage(rowsAmount, 90):]
-
-        self.yTrain = y[:percentage(rowsAmount, 70)]
-        self.yValidation = y[percentage(
-            rowsAmount, 70):percentage(rowsAmount, 90)]
-        self.yTest = y[percentage(rowsAmount, 90):]
+        self.xTrain, self.xVal, self.xTest = splitData(x, 70, 20, 10)
+        self.yTrain, self.yVal, self.yTest = splitData(y, 70, 20, 10)
 
     def hypothesis(self, w, x):
         return np.dot(w, x)
 
+    def s(self, w, xi):
+        return 1 / (1 + math.e ** (-self.hypothesis(w, xi)))
+
     def derivate(self, w, x, y):
         m = len(x)
-        print(m)
 
         dw = [0] * (self.k + 1)
 
         for i in range(self.k + 1):
             for j in range(m):
-                dw[i] += self.s(w, x[j]) - y[j][0]
+                dw[i] += y[j][0] * x[j][i] - self.s(w, x[j]) * x[j][i]
 
-            dw[i] *= (x[i] / m)
+            dw[i] *= (-1 / m)
 
-        print(dw)
         return dw
 
-    def s(self, w, xi):
-        return 1 / (1 + math.e ** (-self.hypothesis(w, xi)))
-
-    def cost(self, w, x, y):
-        # print(x)
+    def error(self, w, x, y):
         err = 0
         m = len(x)
 
-        # Por aqui esta el error =======================================
         for i in range(m):
             s = self.s(w, x[i])
-            # if i == 0:
-            # print(w)
-            # print(x[i])
-            # print(i, s)
-            # print()
-            err += (y[i][0] * math.log(s)) + \
-                (1 - y[i][0] * math.log(1 - s))
+            err += (y[i][0] * math.log(s)) + (1 - y[i][0]) * math.log(1 - s)
 
         err *= (-1 / m)
 
@@ -73,6 +53,12 @@ class LogisticRegression:
 
         return w
 
+    def predict(self, w, x):
+        return [1 if self.s(w, xi) >= 0.5 else 0 for xi in x]
+
+    def real(self, y):
+        return [yi[0] for yi in y]
+
     def train(self):
         w = [np.random.rand() for i in range(self.k)]
         b = np.random.rand()
@@ -80,48 +66,53 @@ class LogisticRegression:
         w.append(b)
 
         self.xTrain = [np.append(row, 1) for row in self.xTrain]
+        self.xVal = [np.append(row, 1) for row in self.xVal]
+        self.xTest = [np.append(row, 1) for row in self.xTest]
 
-        errorListTrain = [self.cost(w, self.xTrain, self.yTrain)]
-        # errorListValidation = [
-        # self.cost(w, self.xValidation, self.yValidation)]
-        # errorListTest = [self.cost(w, self.xTest, self.yTest)]
+        errorTrain = []
+        errorVal = []
+        errorTest = []
 
         for i in range(self.epoch):
-            dw = self.derivate(w, self.xTrain, self.yTrain)
+            errorTrain.append(self.error(w, self.xTrain, self.yTrain))
+            errorVal.append(self.error(w, self.xVal, self.yVal))
+            errorTest.append(self.error(w, self.xTest, self.yTest))
 
+            dw = self.derivate(w, self.xTrain, self.yTrain)
             w = self.update(w, dw)
 
-            # Animation
-            """
-            plt.scatter(i, errTrain, label="Training", color="red")
-            plt.scatter(i, errValidation, label="Validation", color="green")
-            plt.scatter(i, errTest, label="Testing", color="blue")
-            plt.pause(0.0001)
-            """
+        predTrain = self.predict(w, self.xTrain)
+        predVal = self.predict(w, self.xVal)
+        predTest = self.predict(w, self.xTest)
 
-            # Print
-            """
-            print("epoch:", i)
-            print("train:", errTrain)
-            print("validation:", errValidation)
-            print("test:", errTest)
-            print()
-            """
+        yTrain = self.real(self.yTrain)
+        yVal = self.real(self.yVal)
+        yTest = self.real(self.yTest)
 
-            errorListTrain.append(self.cost(w, self.xTrain, self.yTrain))
-            # errorListValidation.append(self.cost(w, self.xValidation, self.yValidation))
-            # errorListTest.append(self.cost(w, self.xTest, self.yTest))
+        trainMatrix = confusion_matrix(yTrain, predTrain)
+        testMatrix = confusion_matrix(yTest, predTest)
+        valMatrix = confusion_matrix(yVal, predVal)
+
+        trainAccuracy = getAccuracy(trainMatrix)
+        valAccuracy = getAccuracy(valMatrix)
+        testAccuracy = getAccuracy(testMatrix)
+
+        print("Train")
+        print(trainMatrix)
+        print("Accuracy:", trainAccuracy)
+        print()
+        print("Testing")
+        print(testMatrix)
+        print("Accuracy:", testAccuracy)
+        print()
+        print("Validation")
+        print(valMatrix)
+        print("Accuracy:", valAccuracy)
 
         # Graph
-        # plt.plot(errorListTrain, label="Training")
-        # plt.plot(errorListValidation, label="Validation")
-        # plt.plot(errorListTest, label="Testing")
+        plt.plot(errorTrain, label="Training")
+        plt.plot(errorVal, label="Validation")
+        plt.plot(errorTest, label="Testing")
 
-        # plt.legend()
-
-        """
-        ys = [self.hypothesis(w, b, xi) for xi in self.x]
-        plt.plot(self.y, '*')
-        plt.plot(ys, '*')
-        """
-        # plt.show()
+        plt.legend()
+        plt.show()
