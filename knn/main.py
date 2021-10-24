@@ -13,4 +13,5 @@ if __name__ == "__main__":
     alpha = 0.1
 
     e1 = KNN(shuffleX, shuffleY)
-    e1.knn(4, (1, 11.8, 6.1, 1, 0, 1, 1))
+    # e1.knn(4, (1, 11.8, 6.1, 1, 0, 1, 1))
+    e1.testing()

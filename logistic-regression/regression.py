@@ -59,6 +59,9 @@ class LogisticRegression:
     def real(self, y):
         return [yi[0] for yi in y]
 
+    def testing(self, w, x, y):
+        return [self.error(w, x, y) for _ in range(self.epoch)]
+
     def train(self):
         w = [np.random.rand() for i in range(self.k)]
         b = np.random.rand()
@@ -71,7 +74,6 @@ class LogisticRegression:
 
         errorTrain = []
         errorVal = []
-        errorTest = []
 
         for i in range(self.epoch):
             errorTrain.append(self.error(w, self.xTrain, self.yTrain))
@@ -80,8 +82,7 @@ class LogisticRegression:
             dw = self.derivate(w, self.xTrain, self.yTrain)
             w = self.update(w, dw)
 
-        for i in range(self.epoch):
-            errorTest.append(self.error(w, self.xTest, self.yTest))
+        errorTest = self.testing(w, self.xTest, self.yTest)
 
         predTrain = self.predict(w, self.xTrain)
         predVal = self.predict(w, self.xVal)
@@ -92,8 +93,8 @@ class LogisticRegression:
         yTest = self.real(self.yTest)
 
         trainMatrix = confusion_matrix(yTrain, predTrain)
-        testMatrix = confusion_matrix(yTest, predTest)
         valMatrix = confusion_matrix(yVal, predVal)
+        testMatrix = confusion_matrix(yTest, predTest)
 
         trainAccuracy = getAccuracy(trainMatrix)
         valAccuracy = getAccuracy(valMatrix)
