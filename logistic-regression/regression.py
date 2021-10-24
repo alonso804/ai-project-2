@@ -76,10 +76,12 @@ class LogisticRegression:
         for i in range(self.epoch):
             errorTrain.append(self.error(w, self.xTrain, self.yTrain))
             errorVal.append(self.error(w, self.xVal, self.yVal))
-            errorTest.append(self.error(w, self.xTest, self.yTest))
 
             dw = self.derivate(w, self.xTrain, self.yTrain)
             w = self.update(w, dw)
+
+        for i in range(self.epoch):
+            errorTest.append(self.error(w, self.xTest, self.yTest))
 
         predTrain = self.predict(w, self.xTrain)
         predVal = self.predict(w, self.xVal)
