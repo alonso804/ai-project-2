@@ -62,6 +62,21 @@ class LogisticRegression:
     def testing(self, w, x, y):
         return [self.error(w, x, y) for _ in range(self.epoch)]
 
+    def report(self, train, val, test):
+        print("Train")
+        print(train[0])
+        print("Accuracy:", train[1])
+        print()
+
+        print("Validation")
+        print(val[0])
+        print("Accuracy:", val[1])
+        print()
+
+        print("Testing")
+        print(test[0])
+        print("Accuracy:", test[1])
+
     def train(self):
         w = [np.random.rand() for i in range(self.k)]
         b = np.random.rand()
@@ -100,17 +115,9 @@ class LogisticRegression:
         valAccuracy = getAccuracy(valMatrix)
         testAccuracy = getAccuracy(testMatrix)
 
-        print("Train")
-        print(trainMatrix)
-        print("Accuracy:", trainAccuracy)
-        print()
-        print("Testing")
-        print(testMatrix)
-        print("Accuracy:", testAccuracy)
-        print()
-        print("Validation")
-        print(valMatrix)
-        print("Accuracy:", valAccuracy)
+        self.report((trainMatrix, trainAccuracy),
+                    (valMatrix, valAccuracy),
+                    (testMatrix, testAccuracy))
 
         # Graph
         plt.plot(errorTrain, label="Training")
