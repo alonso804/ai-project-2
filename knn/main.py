@@ -1,6 +1,9 @@
 import numpy as np
 from functions import passData, normalize, shuffle, clearFiles
 from knn import KNN
+import warnings
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 if __name__ == "__main__":
@@ -13,5 +16,6 @@ if __name__ == "__main__":
     alpha = 0.1
 
     e1 = KNN(shuffleX, shuffleY)
-    # e1.knn(4, (1, 11.8, 6.1, 1, 0, 1, 1))
-    e1.testing()
+
+    for i in range(31, 41):
+        e1.kFoldCrossValidation(10, i)

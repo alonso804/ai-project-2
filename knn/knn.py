@@ -1,28 +1,32 @@
 from rtree import index
-from functions import splitData, getAccuracy
+from functions import splitData, getAccuracy, getError, clearFiles
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import KFold
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 class KNN:
     def __init__(self, x, y):
-        p = index.Property()
-        p.dimension = 7
-        p.dat_extension = 'data'
-        p.idx_extension = 'index'
-        self.idx = index.Index('7d', properties=p)
+        self.p = index.Property()
+        self.p.dimension = 7
+        self.p.dat_extension = 'data'
+        self.p.idx_extension = 'index'
+        self.idx = index.Index('7d', properties=self.p)
         self.x = x
         self.y = y
 
-        self.xTrain, self.xVal, self.xTest = splitData(x, 70, 20, 10)
-        self.yTrain, self.yVal, self.yTest = splitData(y, 70, 20, 10)
-
-        self.insertAll(self.xTrain, self.yTrain)
+        # self.insertAll(self.x, self.y)
 
     def insertAll(self, x, y):
         for i, coordinates in enumerate(x):
             point = tuple(coordinates)
             point += point
             self.idx.insert(int(y[i][0]), point)
+
+    def clear(self):
+        clearFiles()
+        self.idx = index.Index('7d', properties=self.p)
 
     def countNeighbors(self, neighbors):
         count = {1: 0, 0: 0}
@@ -53,20 +57,42 @@ class KNN:
 
         return predict
 
-    def predict(self, x):
-        K_TEST = 5
-        return [self.knn(K_TEST, tuple(xi)) for xi in x]
+    def predict(self, k, idx):
+        return [self.knn(k, tuple(self.x[i])) for i in idx]
 
-    def real(self, y):
-        return [yi[0] for yi in y]
+    def real(self, idx):
+        return [self.y[i] for i in idx]
 
-    def testing(self):
-        predTest = self.predict(self.xTest)
-        yTest = self.real(self.yTest)
+    def report(self, matrix):
+        print(matrix)
+        print("Accuracy: ", getAccuracy(testMatrix))
+        print()
 
-        testMatrix = confusion_matrix(yTest, predTest)
-        testAccuracy = getAccuracy(testMatrix)
+    def kFoldCrossValidation(self, folds, k):
+        kf = KFold(n_splits=folds)
+        n = self.x.shape[0]
 
-        print("Testing")
-        print(testMatrix)
-        print("Accuracy:", testAccuracy)
+        errors = []
+
+        for trainIdx, testIdx in kf.split(range(n)):
+            for i in trainIdx:
+                point = tuple(self.x[i])
+                point += point
+                self.idx.insert(int(self.y[i][0]), point)
+
+            predTest = self.predict(k, testIdx)
+            yReal = self.real(testIdx)
+
+            testMatrix = confusion_matrix(yReal, predTest)
+            # self.report(testMatrix)
+            error = getError(testMatrix)
+            errors.append(error)
+            self.clear()
+
+        average = sum(errors) / len(errors)
+        # print(errors)
+        # print(average)
+        fig = plt.figure()
+        plt.figure().clear()
+        sns.distplot(errors)
+        plt.savefig(f'./test/k_{k}_{round(average, 2)}.png')

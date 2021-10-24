@@ -50,6 +50,10 @@ def getAccuracy(confusionMatrix):
     return (confusionMatrix[0][0] + confusionMatrix[1][1]) / (confusionMatrix[0][0] + confusionMatrix[0][1] + confusionMatrix[1][0] + confusionMatrix[1][1]) * 100
 
 
+def getError(confusionMatrix):
+    return (confusionMatrix[1][0] + confusionMatrix[0][1]) / (confusionMatrix[0][0] + confusionMatrix[0][1] + confusionMatrix[1][0] + confusionMatrix[1][1]) * 100
+
+
 def clearFiles():
     for _, _, files in os.walk('./'):
         if '7d.data' in files:
