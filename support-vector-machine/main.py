@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     epoch = 1000
     alpha = 0.001
-    C = 20
+    C = 3
 
     np.random.seed(0)
     shuffleX, shuffleY = shuffle(x, y)
