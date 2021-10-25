@@ -1,6 +1,7 @@
 #include "Iris.h"
 #include "DecisionTree.h"
 #include "CSVReader.h"
+#include <fstream>
 
 float accuracy(vector<float> a, vector<float> b){
 	int countError = 0;
@@ -29,7 +30,7 @@ int main(int argc, char *argv[]) {
 	auto predict = decisionTree.predict(test);
 	auto real_results = decisionTree.getRealResults(test);
 
-	auto errores = decisionTree.KFoldError(2);
+	auto errores = decisionTree.KFoldError(10);
 
 	for(auto it:errores){
 		cout << it << endl;

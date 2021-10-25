@@ -80,7 +80,7 @@ vector<vector<float>> trainingData(vector<vector<float>> &data){
     for(int i=0; i<folds; i++){
       vector<vector<float>> result;
       int ind = this->data.size()/folds;
-      for(int j= i*(ind); j < ind + (ind * i); i++){
+      for(int j= i*(ind); j < ind + (ind * i); j++){
         result.push_back(this->data[j]);
       }
 
@@ -102,7 +102,7 @@ vector<vector<float>> trainingData(vector<vector<float>> &data){
 		}
 	}
 
-	return countError*100 / b.size();
+	return (float) countError*100 / b.size();
 }
 
   vector<float> getRealResults(vector<vector<float>> &data){
