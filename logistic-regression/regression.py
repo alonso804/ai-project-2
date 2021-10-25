@@ -125,4 +125,5 @@ class LogisticRegression:
         plt.plot(errorTest, label="Testing")
 
         plt.legend()
+        # plt.savefig(f'./test/graphs/alpha_{self.alpha}.png')
         plt.show()

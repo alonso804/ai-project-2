@@ -51,8 +51,8 @@ class SVM:
     def real(self, y):
         return [yi[0] for yi in y]
 
-    def testing(self, w, x, y):
-        return [self.error(w, x, y) for _ in range(self.epoch)]
+    def testing(self, w, b, x, y):
+        return [self.error(w, b, x, y) for _ in range(self.epoch)]
 
     def report(self, train, val, test):
         print("Train")
@@ -75,13 +75,12 @@ class SVM:
 
         errorTrain = []
         errorVal = []
-        errorTest = []  # TODO separar
 
         for _ in range(self.epoch):
             errorTrain.append(self.error(w, b, self.xTrain, self.yTrain))
             errorVal.append(self.error(w, b, self.xVal, self.yVal))
 
-            randomRow = np.random.randint(len(self.xTrain))  # ADAM
+            randomRow = np.random.randint(len(self.xTrain))
             x = self.xTrain[randomRow]
             y = self.yTrain[randomRow][0]
 
@@ -91,7 +90,7 @@ class SVM:
                 w[i] -= self.alpha * dw
                 b -= self.alpha * db
 
-        errorTest = self.testing(w, self.xTest, self.yTest)
+        errorTest = self.testing(w, b, self.xTest, self.yTest)
 
         predTrain = self.predict(w, b, self.xTrain)
         predVal = self.predict(w, b, self.xVal)
@@ -118,4 +117,5 @@ class SVM:
         plt.plot(errorTest, label="Testing")
 
         plt.legend()
-        plt.show()
+        plt.savefig(f'./test/graphs/C_{self.C}_alpha_{self.alpha}.png')
+        # plt.show()

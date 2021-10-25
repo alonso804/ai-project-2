@@ -17,5 +17,5 @@ if __name__ == "__main__":
 
     e1 = KNN(shuffleX, shuffleY)
 
-    for i in range(31, 41):
+    for i in range(1, 41):
         e1.kFoldCrossValidation(10, i)

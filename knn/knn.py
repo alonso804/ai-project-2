@@ -90,9 +90,10 @@ class KNN:
             self.clear()
 
         average = sum(errors) / len(errors)
-        # print(errors)
-        # print(average)
+        print(f'k: {k}')
+        print(f'\taverage: {average}')
+        print()
         fig = plt.figure()
         plt.figure().clear()
         sns.distplot(errors)
-        plt.savefig(f'./test/k_{k}_{round(average, 2)}.png')
+        plt.savefig(f'./test/graphs/k_{k}_average_{round(average, 2)}.png')
