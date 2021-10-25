@@ -11,6 +11,7 @@ struct best_split{
   vector<vector<float>> data_right;
   float gini_gain;
 
+
   void set(int feature_index,float value, vector<vector<float>> data_left, 
   vector<vector<float>> data_right, float gini_gain){
     this->feature_index = feature_index;
@@ -39,7 +40,47 @@ public:
     this->min_samples_split = min_samples_split;
     n_features = this->data[0].size() - 1;
     this->max_depth = max_depth;
-    this->root = build_tree(this->data);
+    shuffle(this->data);
+    this->root = build_tree(trainingData(this->data));
+
+  }
+
+    #include <algorithm>    // std::shuffle
+#include <array>        // std::array
+#include <random>       // std::default_random_engine
+#include <chrono>       // std::chrono::system_clock
+
+  void shuffle(vector<vector<float>> &data){
+      unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+      std::shuffle(data.begin(), data.end(), std::default_random_engine(seed));
+    }
+
+vector<vector<float>> trainingData(vector<vector<float>> &data){
+    vector<vector<float>> result;
+
+    for(int i=0; i <= 0.08*data.size(); i++){
+      result.push_back(data[i]);
+    }
+
+    return result;
+  }
+
+  vector<vector<float>> testingData(){
+    vector<vector<float>> result;
+
+    for(int i=0.08*this->data.size(); i < this->data.size(); i++){
+      result.push_back(data[i]);
+    }
+
+    return result;
+  }
+
+  vector<float> getRealResults(vector<vector<float>> &data){
+    vector<float> Y;
+    for (auto it = begin(data); it!= end(data);it++)
+      Y.push_back((*it)[(*it).size()-1]);
+
+    return Y;
   }
 
   vector<float> set_Y(vector<vector<float>> &data){
@@ -111,7 +152,7 @@ public:
             left.push_back(*it);
         }
         else {
-            right.push_back(*it);
+            right.push_back(*it);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
         }
     }
     }

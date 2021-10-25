@@ -12,21 +12,21 @@ int main(int argc, char *argv[]) {
 	*/
 
 	auto decisionTree = DecisionTree("gender_classification.csv",3,5);
-	//decisionTree.print();
-	auto data = CSVReader::read("gender_classification.csv");
-	auto test =  decisionTree.set_X(data);
-	auto res =  decisionTree.set_Y(data);
+	decisionTree.print();
+	auto test =  decisionTree.testingData();
 	auto predict = decisionTree.predict(test);
+
+	auto real_results = decisionTree.getRealResults(test);
 
 	int countError = 0;
 	for (int i = 0; i < test.size(); i++) {
-		if (predict[i] != res[i]) {
+		if (predict[i] != real_results[i]) {
 			countError += 1;
 			//cout << "Error" << endl;
 		}
 	}
 	cout << "Hay " << countError << " errores" << endl;
-	cout <<"Accuracy: " << 100 - (float)(countError*100) / res.size() << endl;
-	decisionTree.generatePDF();
+	cout <<"Accuracy: " << 100 - (float)(countError*100) / real_results.size() << endl;
+	//decisionTree.generatePDF();
 	return 0;
 }
