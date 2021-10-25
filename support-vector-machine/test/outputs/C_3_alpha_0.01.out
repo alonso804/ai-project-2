@@ -1,0 +1,14 @@
+Train
+[[1613  129]
+ [  11 1747]]
+Accuracy: 96.0
+
+Validation
+[[457  45]
+ [  4 494]]
+Accuracy: 95.1
+
+Testing
+[[238  19]
+ [  3 241]]
+Accuracy: 95.60878243512974
