@@ -1,5 +1,6 @@
 #include "DecisionTree.h"
 #include "CSVReader.h"
+#include <fstream>
 
 float accuracy(vector<float> a, vector<float> b){
 	int countError = 0;
@@ -20,13 +21,12 @@ int main(int argc, char *argv[]) {
 	auto predict = decisionTree.predict(test);
 	auto real_results = decisionTree.getRealResults(test);
 
-	int countError = 0;
-	for (int i = 0; i < test.size(); i++) {
-		if (predict[i] != real_results[i]) {
-			countError += 1;
-		}
+	auto errores = decisionTree.KFoldError(10);
+
+	for(auto it:errores){
+		cout << it << endl;
 	}
-	cout << "Hay " << countError << " errores" << endl;
-	cout <<"Accuracy: " << 100 - (float)(countError*100) / real_results.size() << endl;
+
+	cout <<"Accuracy: " << accuracy(predict, real_results) << endl;
 	return 0;
 }
