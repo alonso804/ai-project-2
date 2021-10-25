@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 	for(auto it:errores){
 		cout << it << endl;
 	}
-	cout << "Hay " << countError << " errores" << endl;
-	cout <<"Accuracy: " << 100 - (float)(countError*100) / real_results.size() << endl;
+
+	cout <<"Accuracy: " << accuracy(predict, real_results) << endl;
 	return 0;
 }
