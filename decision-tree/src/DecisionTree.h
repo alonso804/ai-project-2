@@ -59,7 +59,7 @@ vector<vector<float>> trainingData(vector<vector<float>> &data){
     vector<vector<float>> result;
 
     for(int i=0; i <= 0.08*data.size(); i++){
-      result.push_back(data[i]);
+      result.push_back(this->data[i]);
     }
 
     return result;
@@ -69,11 +69,41 @@ vector<vector<float>> trainingData(vector<vector<float>> &data){
     vector<vector<float>> result;
 
     for(int i=0.08*this->data.size(); i < this->data.size(); i++){
-      result.push_back(data[i]);
+      result.push_back(this->data[i]);
     }
 
     return result;
   }
+
+  vector<float> KFoldError(int folds){
+    vector<float> error;
+    for(int i=0; i<folds; i++){
+      vector<vector<float>> result;
+      int ind = this->data.size()/folds;
+      for(int j= i*(ind); j < ind + (ind * i); i++){
+        result.push_back(this->data[j]);
+      }
+
+      auto pred = predict(result);
+      auto real_results = getRealResults(result);
+
+      error.push_back(calcError(pred, real_results));
+    }
+
+    return error;
+
+  }
+
+  float calcError(vector<float> a, vector<float> b){
+	int countError = 0;
+	for (int i = 0; i < a.size(); i++) {
+		if (a[i] != b[i]) {
+			countError += 1;
+		}
+	}
+
+	return countError*100 / b.size();
+}
 
   vector<float> getRealResults(vector<vector<float>> &data){
     vector<float> Y;
