@@ -1,4 +1,3 @@
-#include "Iris.h"
 #include "DecisionTree.h"
 #include "CSVReader.h"
 #include <fstream>
@@ -8,7 +7,6 @@ float accuracy(vector<float> a, vector<float> b){
 	for (int i = 0; i < a.size(); i++) {
 		if (a[i] != b[i]) {
 			countError += 1;
-			//cout << "Error" << endl;
 		}
 	}
 
@@ -16,16 +14,9 @@ float accuracy(vector<float> a, vector<float> b){
 }
 
 int main(int argc, char *argv[]) {
-	/*
-	auto features = CSVReader<Iris>::read("iris.csv");
-
-	for (auto f : features) {
-		cout << f << endl;
-	}
-	*/
-
-	auto decisionTree = DecisionTree("gender_classification.csv",3,5);
-	//decisionTree.print();
+	auto decisionTree = DecisionTree("gender_classification.csv", 3, 3);
+	decisionTree.generatePDF();
+	decisionTree.print();
 	auto test =  decisionTree.testingData();
 	auto predict = decisionTree.predict(test);
 	auto real_results = decisionTree.getRealResults(test);
@@ -35,8 +26,7 @@ int main(int argc, char *argv[]) {
 	for(auto it:errores){
 		cout << it << endl;
 	}
-
-	cout <<"Accuracy: " << accuracy(predict, real_results) << endl;
-	//decisionTree.generatePDF();
+	cout << "Hay " << countError << " errores" << endl;
+	cout <<"Accuracy: " << 100 - (float)(countError*100) / real_results.size() << endl;
 	return 0;
 }
