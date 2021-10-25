@@ -12,8 +12,6 @@ if __name__ == "__main__":
 
     np.random.seed(0)
     shuffleX, shuffleY = shuffle(x, y)
-    epoch = 1000
-    alpha = 0.1
 
     e1 = KNN(shuffleX, shuffleY)
 
